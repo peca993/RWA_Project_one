@@ -6,6 +6,18 @@ import * as Rxjs from "rxjs";
 import { Duck } from './Duck';
 import { Game } from './Game';
 
+const height = 490;   
+const witdh = 890;
+
+let gameTime = 1;
+let clock = 0;
+let step = 1;
+let numOfCreatedDucks = -1;
+let ducks = [];
+let x = Math.random()*witdh;
+let y = Math.random()*height;
+ducks.push(new Duck(numOfCreatedDucks,10,1,step,x,y));
+numOfCreatedDucks++;
 
 const app = document.getElementById('app');
 
@@ -32,49 +44,135 @@ startBtn$.subscribe(
     },
     () => {
         alert('cu uradim nesto!');
-    }
-    
+    }    
 );
 
-const stopBtn = document.createElement("button");
-c11.appendChild(stopBtn);
-stopBtn.className = "btn-lg btn-warning";
-stopBtn.innerHTML = "STOP";
-const stopBtn$ = Rxjs.Observable.fromEvent(stopBtn,"click");
-stopBtn$.subscribe(
-    (e) => {
-        startBtn.innerHTML = "START";
-        console.log(e);
-    },
-    (err) => {
-        console.log(err);
-    },
-    () => {
-        alert('cu uradim nesto!');
-    }
-    
-);
 
 const gameScreen = document.createElement('div');
 app.appendChild(gameScreen);
 gameScreen.className = "gameScreen";
 
-const ducks = []; 
-
-let duck = document.createElement("button")
-ducks.push(duck);
 
 
+/**
+ * -------------------------------------------------------
+ */
+const timer$ = Rxjs.Observable.timer(0, 100)
+    .timeInterval();    // testirati moze li bez ovoaga <<---
 
-ducks.map(e => {    
-    e.className = "duck btn btn-info",
-    gameScreen.appendChild(e),
-    e.innerHTML = '<i class="fa fa-twitter"></i>';
-    e.style.left =  (Math.random()*950+25) +"px",
-    e.style.top = (Math.random()*350+25)+"px",Rxjs.Observable.fromEvent(e,"click")
-    .subscribe( () =>{ducks.pop(e),
-        e.parentNode.removeChild(e)} )
+const movement$$ = timer$.subscribe(    
+    () => {
+        ducks.map(
+            (duck) => {
+                let x = Math.random() >= 0.5;
+                let y = Math.random() >= 0.5;
+                if(x == true){
+                    x = step;   //up
+                }else{
+                    x = -step;  //down
+                }
+                if(y == true){
+                    y = step;   //right
+                }else{
+                    y = -step;  //left
+                }
+                let xx = duck.xPosition + x;
+                let yy = duck.yPosition + y;
+
+                /**
+                 * Borders
+                 */
+                if(xx > witdh){
+                    xx = witdh;
+                }
+                if(xx < 0){
+                    xx = 0;
+                }
+                if(yy > height){
+                    yy = 0;
+                }
+                if(yy < 0){
+                    yy = 0;
+                }
+
+                duck.fly(xx,yy);   
+            }    
+        );
+
+        }
+
+    );
+
+
+
+    timer$.subscribe(
+    () => {
+        clock++;
+        if(clock === 20){
+            gameTime++;
+            clock = 0;
+            step++;
+            let x = Math.random()*witdh;
+            let y = Math.random()*height
+            ducks.push(new Duck(numOfCreatedDucks,10,1,step,x,y));
+            numOfCreatedDucks++;
+        }
+
+        let rest = gameTime % 10;
+        if(rest == 0){
+            
+        }
+    }
+);
+
+const display$$ = timer$.subscribe(
+    () => {
+        gameScreen.innerHTML = "";  //  Clear screen
+        ducks.map(
+            duck => {
+                    
+                    const btnDuck = document.createElement("button");
+                    gameScreen.appendChild(btnDuck);
+                    btnDuck.className = "duck btn btn-info",
+                    btnDuck.innerHTML = '<i class="fa fa-twitter"></i>';
+                    btnDuck.style.left =  duck.xPosition +"px";
+                    btnDuck.style.top = duck.yPosition+"px";
+
+                    const btnClick$ = Rxjs.Observable.fromEvent(btnDuck,"click");
+
+                    btnClick$.subscribe(
+                        () => {
+                            duck.health -= 10;
+                        }
+                    );
+   
+            }
+        );    
+
+        let filteredDucks = ducks.filter(
+            (duck) => {
+                return (duck.health > 0);
+            }
+        );
+
+        ducks = filteredDucks;
     
-});
+    
+        
+    }
 
-ducks.map(e => document.write(e));
+    
+);
+
+const game$$ = timer$.subscribe(
+    () => {
+        if(ducks.length > 150){
+            movement$$.unsubscribe();
+            display$$.unsubscribe();
+            gameScreen.innerHTML = "";
+            const gameOverH1 = document.createElement("h1");
+            gameScreen.appendChild(gameOverH1);
+            gameOverH1.innerHTML = "GAME OVER!";
+        }
+    }
+);

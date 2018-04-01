@@ -2,13 +2,15 @@ export class Game{
 
     constructor(){
         this.status = false;
+
+
     }
 
-    start(){
+    static start(){
         this.status = true;
     }
 
-    stop(){
+    static stop(){
         this.status = false;
     }
 

@@ -1,9 +1,12 @@
 export class Duck{
 
-    constructor(speed,color,health){
+    constructor(id,speed,color,health,xPosition,yPosition){
+        this.id = id;
         this.speed = speed;
         this.color = color;
         this.health = health;
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
     }
 
     speedUp(){
@@ -22,8 +25,13 @@ export class Duck{
         this.health--;
     }
 
-    display(){
-        return "<button></button>"
+    static display(){
+        return console.log("Duck(speed = "+this.speed+",color = "+this.color+",health = "+this.health);
+    }
+
+    fly(x,y){
+        this.xPosition = x;
+        this.yPosition = y;
     }
 
 

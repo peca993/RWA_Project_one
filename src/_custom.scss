@@ -4,9 +4,8 @@
 
 .gameScreen {
     position: absolute;
-    width: 1000px;
-    height: 400px;
-    background-color: white;
-    background: url("/imgs/background-xp.jpg") center no-repeat;
     
+    background-color: white!important;
+    /*background: url("/imgs/background-xp.jpg") ;*/
+    background-size:100%;
 }
