@@ -1,74 +1,24 @@
 {
   "gamer": [
     {
-      "id": "1",
+      "id": 1,
       "name": "Perconi",
       "score": "1"
     },
     {
-      "id": "Ekv1kfa",
-      "name": "sd2",
+      "id": 2,
+      "name": "",
       "score": 2
     },
     {
-      "id": "ZBqr3r~",
-      "name": "2dsa",
-      "score": 6
+      "id": 3,
+      "name": "ssda",
+      "score": 4
     },
     {
-      "id": "Hzq~mv0",
-      "name": "ad11",
-      "score": 3
-    },
-    {
-      "id": "cF94PlT",
-      "name": "<bb<",
+      "id": 4,
+      "name": "",
       "score": 2
-    },
-    {
-      "id": "bIaRNGb",
-      "name": "zavac",
-      "score": 3
-    },
-    {
-      "id": "wi6wux5",
-      "name": "lalac",
-      "score": 2
-    },
-    {
-      "id": "~rvxutX",
-      "name": "da2",
-      "score": 2
-    },
-    {
-      "id": "H1hkCj9",
-      "name": "Yeas!",
-      "score": 16
-    },
-    {
-      "id": "XLZ2pjx",
-      "name": "Lala",
-      "score": 2
-    },
-    {
-      "id": "JRNH3KB",
-      "name": "Oerujs",
-      "score": 2
-    },
-    {
-      "id": "XJyyYpa",
-      "name": "Over d game",
-      "score": 36
-    },
-    {
-      "id": "IB74N0o",
-      "name": "Bbbe",
-      "score": 86
-    },
-    {
-      "id": "4A2ODdn",
-      "name": "Opala",
-      "score": 16
     }
   ]
 }

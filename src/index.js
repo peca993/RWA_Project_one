@@ -33,13 +33,13 @@ r1.className = "row card";
 
 const c11 = document.createElement("div");
 r1.appendChild(c11);
-c11.className = "col-lg-6"
+c11.className = ""
 
 const instructionsBtn = document.getElementById("instructionsBtn");
 Rxjs.Observable.fromEvent(instructionsBtn,"click")
     .subscribe(
         () => {
-            const instructions = "GAME INSTRUCTIONS\n\n";
+            const instructions = "GAME INSTRUCTIONS\n\n Put your mouse over the Twitter to shoot it.\n Try to get a high score. \n Enjoy!";
             
             alert(instructions);
         }
@@ -54,14 +54,14 @@ startBtn.innerHTML = '<i class="fa fa-play"></i> START';
 const sourceCodeBtn = document.createElement("button");
 const sourceCodeDiv = document.getElementById('sourceCodeDiv');
 sourceCodeDiv.appendChild(sourceCodeBtn);
-sourceCodeBtn.className = "btn-lg  btn-outline-success";
+sourceCodeBtn.className = "btn-lg  btn-success";
 sourceCodeBtn.innerHTML = '<i class="fa fa-github-alt"></i>Source code';
 sourceCodeBtn.onclick = () => {
     location.href = "https://github.com/peca993/RWA_Project_one";
 };
 
 const highScoreLink = document.getElementById("highScoresLink");
-highScoreLink.className = "btn-lg  btn-outline-danger";
+highScoreLink.className = "btn-lg  btn-danger";
 const highScoreBtnIcon = document.createElement("i");
 highScoreLink.appendChild(highScoreBtnIcon);
 //highScoreLink.className = "fa fa-list-ol"; 
@@ -69,11 +69,17 @@ highScoreLink.appendChild(highScoreBtnIcon);
 const gameScreen = document.createElement('div');
 c11.appendChild(gameScreen);
 //gameScreen.backgroundImage = "url('/images/background-mac.jpg')"; 
-gameScreen.className = "gameScreen";
+gameScreen.className = "gameScreen text-center pagination-centered center-block";
+
+
+const gameScreenBottom = document.createElement('div');
+c11.appendChild(gameScreenBottom);
+gameScreenBottom.className = "row";
 
 const scoreH1 = document.createElement("h1");
 const scoreSpan = document.createElement("span");
-app.appendChild(scoreH1);
+gameScreenBottom.appendChild(scoreH1);
+scoreH1.className = "col-md-6";
 scoreH1.appendChild(scoreSpan);
 scoreSpan.classList = "badge badge-pill badge-primary";
 
@@ -90,13 +96,13 @@ highScoreLink$.subscribe(
         )
         .subscribe(players => {
 
-            let topPlayers = players.sort((a, b) => b.score - a.score).slice(0,9);
+            let topPlayers = players.sort((a, b) => b.score - a.score).slice(0,10);
 
             let scoreList = "TOP 10\n\n";
             
-            players.map(
-                (player) => {
-                    scoreList += player.name+" "+player.score+"\n";
+            topPlayers.map(
+                (player,index) => {
+                    scoreList += index+1+". "+player.name+" "+player.score+"\n";
                 }
             );
                 alert(scoreList);
@@ -117,14 +123,13 @@ startBtn$.subscribe(
             movement$$.unsubscribe();
             display$$.unsubscribe();
             gameOver$$.unsubscribe();
-            
         }
         
         gameSong.currentTime = 0;
         gameSong.play();
         gameSong.loop = true;
 
-        gameScreen.className = "gameScreen";
+        gameScreen.className = "gameScreen text-center pagination-centered center-block";
         startBtn.innerHTML = '<i class="fa fa-repeat"></i> RESTART';
         gameScreen.innerHTML = "";
         ducks.splice(0,ducks.length);
@@ -198,7 +203,7 @@ startBtn$.subscribe(
                 clock5++;
                 clock10++;
                 if(clock === 20){
-                    scoreSpan.innerHTML ="Score: "+gameTime;
+                    scoreSpan.innerHTML ="Score: "+gameTime+" Level: "+level;
                     gameTime++;
                     clock = 0;
                     step++;
@@ -273,23 +278,22 @@ startBtn$.subscribe(
                     display$$.unsubscribe();
                     timer$$.unsubscribe();
                     gameScreen.innerHTML = "";
-                    const gameOverH1 = document.createElement("h1");
-                    gameOverH1.className = "gameOverH1";
-                    gameScreen.appendChild(gameOverH1);
-                    //gameScreen.backgroundImage = "url('/images/background-xp.jpg')";
-                    gameScreen.className = "gameOverScreen";
-                    gameOverH1.innerHTML = "GAME OVER!";
-                                      
-                    const inputScore = document.createElement("input");
-                    gameScreen.appendChild(inputScore);
-                    inputScore.classList = ""
-                    const inputScoreSbmtBtn = document.createElement("button");
-                    gameScreen.appendChild(inputScoreSbmtBtn);
-                    inputScoreSbmtBtn.className = "btn btn-success";
-                    inputScoreSbmtBtn.innerHTML = "Submit";
+                    
+                    gameScreen.className = "gameOverScreen text-center pagination-centered center-block";
+                   
+                    
                     const submitScoreDiv = document.createElement("div");
-                    submitScoreDiv.classList = "form-group";
-
+                    gameScreenBottom.appendChild(submitScoreDiv);
+                    submitScoreDiv.className = "col-md-6 row";
+                    
+                    const inputScore = document.createElement("input");
+                    submitScoreDiv.appendChild(inputScore);
+                    inputScore.className = "col-md-6 form-control";
+                    const inputScoreSbmtBtn = document.createElement("button");
+                    submitScoreDiv.appendChild(inputScoreSbmtBtn);
+                    inputScoreSbmtBtn.className = "btn btn-success col-md-6";
+                    inputScoreSbmtBtn.innerHTML = "Submit";
+                    
                     
                     
                     const submit$ =  Rxjs.Observable.fromEvent(inputScoreSbmtBtn,"click");
@@ -338,8 +342,7 @@ startBtn$.subscribe(
                             }
                             
                             postData(url,data);
-                            gameScreen.removeChild(inputScore);
-                            gameScreen.removeChild(inputScoreSbmtBtn);
+                            gameScreenBottom.removeChild(submitScoreDiv);
                         }
                     );
                     

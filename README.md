@@ -32,5 +32,5 @@ localhost:3000
 
 ## Game play instructions
 
-Put your mouse over the Tvitter to shoot it. Try to get a high score.
+Put your mouse over the Twitter to shoot it. Try to get a high score.
 Enjoy!
