@@ -6,7 +6,7 @@
     //position: absolute;
     width: 900px;
     height: 506px;
-    background: url("/imgs/background-mac.jpg")/* center no-repeat */;
+    background: url("/images/background-mac.jpg")/* center no-repeat */;
     background-size:cover;
     text-align: center;
 }
@@ -15,7 +15,7 @@
     //position: absolute;
     width: 900px;
     height: 506px;
-    background: url("/imgs/background-xp.jpg")/* center no-repeat */;
+    background: url("/images/background-xp.jpg")/* center no-repeat */;
     background-size:cover;
     text-align: center;
     
@@ -35,4 +35,8 @@
     border-radius: 35px;
     font-size: 24px;
     line-height: 1.33;
+}
+.health {
+    font-size: 10px;
+    color: red;
 }

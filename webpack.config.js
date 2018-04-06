@@ -19,11 +19,11 @@ module.exports = {
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: 'build/', // Relative directory for base of server
+    contentBase: 'build/', 
     publicPath: '/',
     inline: true,
-    port: process.env.PORT || 3000, // Port Number
-    host: '127.0.0.1', // Change to '0.0.0.0' for external facing server
+    port: process.env.PORT || 3000,
+    host: '127.0.0.1', 
     historyApiFallback: true,
   },
   plugins: [
@@ -73,12 +73,11 @@ module.exports = {
           fallback: 'style-loader',
           use: [
             {
-              loader: 'css-loader', // translates CSS into CommonJS modules
+              loader: 'css-loader', 
             }, {
-              loader: 'postcss-loader', // Run post css actions
+              loader: 'postcss-loader', 
               options: {
                 plugins() {
-                  // post css plugins, can be exported to postcss.config.js
                   return [
                     precss,
                     autoprefixer
@@ -86,7 +85,7 @@ module.exports = {
                 }
               }
             }, {
-              loader: 'sass-loader' // compiles SASS to CSS
+              loader: 'sass-loader' 
             }
           ]
         })

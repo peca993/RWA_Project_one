@@ -1,23 +1,22 @@
 import 'bootstrap';
 import './main.scss';
 import $ from 'jquery';
-import { Navbar } from './pageParts/navbar';
 import * as Rxjs from "rxjs";
 import { Duck } from './Duck';
-import { Game } from './Game';
-
 const height = 490;   
 const witdh = 890;
 
 let gameTime = 1;
 let clock = 0;
 let clock5 = 0;
+let clock10 = 0;
 let step = 1;
 let numOfCreatedDucks = -1;
 let ducks = [];
 let x;
 let y;
 let speedUp = 1;
+let level = 1;
 
 let timer$$;
 let display$$;
@@ -36,26 +35,40 @@ const c11 = document.createElement("div");
 r1.appendChild(c11);
 c11.className = "col-lg-6"
 
+const instructionsBtn = document.getElementById("instructionsBtn");
+Rxjs.Observable.fromEvent(instructionsBtn,"click")
+    .subscribe(
+        () => {
+            const instructions = "GAME INSTRUCTIONS\n\n";
+            
+            alert(instructions);
+        }
+    );
+
 const startBtn = document.createElement("button");
 const startBtnDiv = document.getElementById('startBtnDiv');
 startBtnDiv.appendChild(startBtn);
 startBtn.className = "btn-lg btn-primary";
-startBtn.innerHTML = "START";
+startBtn.innerHTML = '<i class="fa fa-play"></i> START';
 
 const sourceCodeBtn = document.createElement("button");
 const sourceCodeDiv = document.getElementById('sourceCodeDiv');
 sourceCodeDiv.appendChild(sourceCodeBtn);
 sourceCodeBtn.className = "btn-lg  btn-outline-success";
-sourceCodeBtn.innerHTML = "Source code";
+sourceCodeBtn.innerHTML = '<i class="fa fa-github-alt"></i>Source code';
 sourceCodeBtn.onclick = () => {
     location.href = "https://github.com/peca993/RWA_Project_one";
 };
 
 const highScoreLink = document.getElementById("highScoresLink");
-highScoreLink.className = "btn-lg  btn-outline-danger"; 
+highScoreLink.className = "btn-lg  btn-outline-danger";
+const highScoreBtnIcon = document.createElement("i");
+highScoreLink.appendChild(highScoreBtnIcon);
+//highScoreLink.className = "fa fa-list-ol"; 
 
 const gameScreen = document.createElement('div');
 c11.appendChild(gameScreen);
+//gameScreen.backgroundImage = "url('/images/background-mac.jpg')"; 
 gameScreen.className = "gameScreen";
 
 const scoreH1 = document.createElement("h1");
@@ -64,6 +77,33 @@ app.appendChild(scoreH1);
 scoreH1.appendChild(scoreSpan);
 scoreSpan.classList = "badge badge-pill badge-primary";
 
+/**
+ * High scores
+ */
+const highScoreLink$ = Rxjs.Observable.fromEvent(highScoreLink,"click");
+highScoreLink$.subscribe(
+    () => {
+
+        const postsObservable =  Rxjs.Observable.fromPromise(
+            fetch(url)
+            .then(response => response.json())
+        )
+        .subscribe(players => {
+
+            let topPlayers = players.sort((a, b) => b.score - a.score).slice(0,9);
+
+            let scoreList = "TOP 10\n\n";
+            
+            players.map(
+                (player) => {
+                    scoreList += player.name+" "+player.score+"\n";
+                }
+            );
+                alert(scoreList);
+        });
+
+    }
+);
 
 /**
  * Start game
@@ -82,9 +122,10 @@ startBtn$.subscribe(
         
         gameSong.currentTime = 0;
         gameSong.play();
+        gameSong.loop = true;
 
         gameScreen.className = "gameScreen";
-        startBtn.innerHTML = "RESTART";
+        startBtn.innerHTML = '<i class="fa fa-repeat"></i> RESTART';
         gameScreen.innerHTML = "";
         ducks.splice(0,ducks.length);
         gameTime = 1;
@@ -101,7 +142,9 @@ startBtn$.subscribe(
 
         const timer$ = Rxjs.Observable.timer(0, 100);
 
-        /** */
+        /**
+         * Movement
+         */
         movement$$ = timer$.subscribe(    
             () => {
                 ducks.map(
@@ -153,6 +196,7 @@ startBtn$.subscribe(
             () => {
                 clock++;
                 clock5++;
+                clock10++;
                 if(clock === 20){
                     scoreSpan.innerHTML ="Score: "+gameTime;
                     gameTime++;
@@ -168,6 +212,11 @@ startBtn$.subscribe(
                     clock5 = 0;
                     speedUp++;  //Speed up
                 }
+
+                if(clock10 == 200){
+                    clock10 = 0;
+                    level++;  //Speed up
+                }
             }
         );
         /**
@@ -175,28 +224,7 @@ startBtn$.subscribe(
          */
         display$$ = timer$.subscribe(
             () => {
-                gameScreen.innerHTML = "";  //  Clear screen
-                ducks.map(
-                    duck => {
-                            
-                            const btnDuck = document.createElement("button");
-                            gameScreen.appendChild(btnDuck);
-                            btnDuck.className = "duck btn-lg btn-info btn-circle btn-xl",
-                            btnDuck.innerHTML = '<i class="fa fa-twitter"></i>'+duck.health;
-                            btnDuck.style.left =  duck.xPosition +"px";
-                            btnDuck.style.top = duck.yPosition+"px";
-        
-                            const btnClick$ = Rxjs.Observable.fromEvent(btnDuck,"mouseover");
-        
-                            btnClick$.subscribe(
-                                () => {
-                                    duck.health -= 10;
-                                }
-                            );
-           
-                    }
-                );    
-        
+
                 let filteredDucks = ducks.filter(
                     (duck) => {
                         return (duck.health > 0);
@@ -204,6 +232,29 @@ startBtn$.subscribe(
                 );
         
                 ducks = filteredDucks;
+                gameScreen.innerHTML = "";  //  Clear screen
+                ducks.map(
+                    duck => {
+                            
+                            const btnDuck = document.createElement("button");
+                            gameScreen.appendChild(btnDuck);
+                            btnDuck.className = "duck btn-lg btn-info btn-circle btn-xl",
+                            btnDuck.innerHTML = '<i class="fa fa-twitter"></i><p class="health"><i class="fa fa-heart"><i>'+duck.health+'</i><p></i>';
+                            btnDuck.style.left =  duck.xPosition +"px";
+                            btnDuck.style.top = duck.yPosition+"px";
+        
+                            const btnClick$ = Rxjs.Observable.fromEvent(btnDuck,"mouseover");
+                            //const btnClick$ = Rxjs.Observable.fromEvent(btnDuck,"click");
+
+                            btnClick$.subscribe(
+                                () => {
+                                    duck.health -= level;
+                                }
+                            );
+                    }
+                );    
+        
+                
             
             }
         
@@ -214,7 +265,7 @@ startBtn$.subscribe(
          */
         gameOver$$ = timer$.subscribe(
             () => {
-                if(ducks.length > 2){
+                if(ducks.length > 15){
                     gameSong.pause();
                     gameSong.currentTime = 0;
                     gameOverSong.play();
@@ -225,6 +276,7 @@ startBtn$.subscribe(
                     const gameOverH1 = document.createElement("h1");
                     gameOverH1.className = "gameOverH1";
                     gameScreen.appendChild(gameOverH1);
+                    //gameScreen.backgroundImage = "url('/images/background-xp.jpg')";
                     gameScreen.className = "gameOverScreen";
                     gameOverH1.innerHTML = "GAME OVER!";
                                       
@@ -299,30 +351,3 @@ startBtn$.subscribe(
     }    
 );
 
-
-
-const highScoreLink$ = Rxjs.Observable.fromEvent(highScoreLink,"click");
-
-highScoreLink$.subscribe(
-    () => {
-
-        const postsObservable =  Rxjs.Observable.fromPromise(
-            fetch(url)
-            .then(response => response.json())
-        )
-        .subscribe(players => {
-
-            let topPlayers = players.sort((a, b) => b.score - a.score).slice(10);
-
-            let scoreList = "TOP 10\n\n";
-            
-            players.map(
-                (player) => {
-                    scoreList += player.name+" "+player.score+"\n";
-                }
-            );
-                alert(scoreList);
-        });
-
-    }
-);
