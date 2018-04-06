@@ -1,6 +1,6 @@
 # Twitter Hunt
 
-Frst RWA project. 
+First RWA project. 
 
 ### Installing
 
