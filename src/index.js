@@ -15,7 +15,7 @@ let numOfCreatedDucks = -1;
 let ducks = [];
 let x;
 let y;
-let speedUp = 1;
+let speedUp = 5;
 let level = 1;
 
 let timer$$;
@@ -136,7 +136,7 @@ startBtn$.subscribe(
         gameTime = 1;
         clock = 0;
         clock5 = 0;
-        speedUp = 1;
+        speedUp = 5;
         step = 1;
         numOfCreatedDucks = -1;
         //ducks = [];
@@ -218,7 +218,7 @@ startBtn$.subscribe(
                     speedUp++;  //Speed up
                 }
 
-                if(clock10 == 200){
+                if(clock10 == 400){
                     clock10 = 0;
                     level++;  //Speed up
                 }
